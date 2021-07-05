@@ -1,29 +1,20 @@
 %% StatDea1 (C) AW 2021 
 %Function for calulate Gini coefficent for the different countries
-%StatDeaGiniPol - for Poland
+%StatDeaGiniPol - for Balkan and East Eur countries
 
 
 clear all
 
-%xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-%Data for Poland
-pop=[5403 4533 3493 4300 2901 2333 2077 2466 1701 2129 2117 1428 1014 1241 1181 986];  %population in regions (ludnoœæ województw)
-%woj=[maz sla wlk mal dol pom kuj lod zpo pka lun wma lbs swi pls opo];  -
-%names of the regions
-lzgo=[8985 8559 6958 5499 4561 4270 4597 4794 2727 4278 4237 2859 1934 2317 2057 1953];%cumulated number of deaths in the region on 15.05.21
-lzgo=[9423 9377 7333 5815 4892 4445 4762 5081 2910 4432 4435 2996 2041 2548 2140 2042];%cumulated number of deaths in the region on 17.06.21
-
-
+%xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx inne dane
+%Data for Balkans
+pop=[2.9 4.1 37.7 2.1 2.1 3.5 10.6 0.6 8.9 6.9 9.6 3.5 6.9 5.4 19.1 10.6];
+lzgo=[2.4 7.9 72.9 4.3 5.3 9.1 30.0 1.6 10.5 17.4 29.4 6.1 6.7 12.3 29.9 11.7];
+%17.06.21: from CSSE in thousand
+lzgo=[2.5 8.2 74.7 4.4 5.5 9.6 30.3 1.6 10.7 18.0 29.9 6.2 7.0 12.5 32.1 12.5];
+%balk=[alb chorw pol slo mac bih cze mnr aut bul hun mol srb svk rum gre];
 %pop and lzgo should be horizontal vectors
 
-%how to change country:
-%1 - remove vectors pop and lzgo
-%2 - insert vectors pop and lzgo for your country as horizontal vectors.
-%3 - (if you have vertical vectors use transposition eg. pop' )
-%4 - change text in fig.4
-
-
-%data for a table: 
+%data fo a table
 %nr - number of the regions / states / provinces
 %minD - the region with minimal number of cumulated deaths
 %maxD - the region with maximal number of cumulated deaths
@@ -35,7 +26,7 @@ maxD=max(lzgo);
 meanD=mean(lzgo);
 stdD=std(lzgo);
 
-[mr(2) minD maxD meanD stdD];
+[mr(2) minD maxD meanD stdD]
 
 
 
@@ -49,26 +40,21 @@ M=1.31*G+0.00086*mdnpm
 %xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 function [G mdnpm sdnpm]=giniAll(pop, deaths)
-%G - Gini coefficent
-%mDea - mean(deaths)
-%k - the number of 1M granules
-%kn - k normalized
 
 
 m=size(pop);
 
-disp('Mean and std of deaths per million: ')
-lzm=deaths./(pop/1000);  %deaths number per mln
+lzm=(deaths*1000./pop);%/1000000;  %deaths number per mln
 
 
-[mean(lzm) std(lzm)]  %mean and std of lzm (per million)!!!!
+[mean(lzm) std(lzm)]  %mean and std of lzm
 mdnpm=mean(lzm);
 sdnpm=std(lzm);
 
 
 [b ip]=sort(lzm, 'descend');
 
-lmo=round(pop/1000,0);  %number of thousand 
+lmo=round(pop,0);  %number of millions 
 
 % calculation of granules representing 1 thousand population with relevant geographic
 % number of deaths
@@ -81,16 +67,15 @@ for i=1:m(2)
     end
 end
 
-%figure(1)
-%plot(z)
+figure(1)
+plot(z)
 
-%Lorenz curve:
+%Lorenz curve
 zsort=sort(z,'ascend');
-zskum=cumsum(zsort);  %Lorenz curve
+zskum=cumsum(zsort);
 
 figure(2)
-plot(zskum)
-title('Lorenz curve before normalization')
+plot(zsort)
 
 
 
@@ -112,20 +97,22 @@ line([0 1],[0 1])
 hold on
 fill([0 1 kn], [0 1 zscumn],'r')
 title('Lorenz Curve and Gini Coefficent ')
-text(0.2, 0.6, 'Poland', 'FontSize',15)
-text(0.6, 0.2, 'G = 0.0362','FontSize',25)
-grid MINOR 
+text(0.2, 0.6, 'Balkans', 'FontSize',15)
+text(0.6, 0.2, 'G = 0.0880','FontSize',25)
+
 
 figure(10)
-subplot(3,2,5)
+subplot(3,2,6)
 plot(kn,zscumn)
 hold on
 line([0 1],[0 1])
 hold on
 fill([0 1 kn], [0 1 zscumn],'r')
-text(0.2, 0.6, 'Poland', 'FontSize',8)
-text(0.54, 0.25, 'G = 0.0362','FontSize',11)
+%title('Lorenz Curve and Gini Coefficent ')
+text(0.2, 0.6, 'Balkans', 'FontSize',8)
+text(0.4, 0.15, 'G = 0.0906','FontSize',11)
 grid MINOR
+hold on
 
 
 
